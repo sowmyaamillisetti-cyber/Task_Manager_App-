@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import API from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -34,16 +33,29 @@ export default function Login() {
   `;
 
   const login = async () => {
-    const res = await API.post("/auth/login", {
-      email,
-      password,
-    });
+    try {
+      const res = await API.post("/auth/login", {
+        email,
+        password,
+      });
 
-    alert(res.data.message);
+      alert(res.data.message || "Login successful");
 
-    if (res.data.token) {
-      localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem(
+          "username",
+          res.data.user?.name || "User"
+        );
+
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      console.log("LOGIN ERROR:", err);
+      alert(
+        err.response?.data?.message ||
+          "Login failed / Server error"
+      );
     }
   };
 
@@ -64,9 +76,9 @@ export default function Login() {
         <div
           style={{
             background: "white",
-            width: "450px",
-            padding: "40px",
-            borderRadius: "20px",
+            width: "800px",
+            padding: "30px",
+            borderRadius: "30px",
             animation: "fadeIn 0.8s ease-in-out, glow 3s infinite",
             textAlign: "center",
           }}
@@ -83,6 +95,7 @@ export default function Login() {
 
           <input
             placeholder="Email"
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
             style={{
               width: "100%",
@@ -100,6 +113,7 @@ export default function Login() {
           <input
             type="password"
             placeholder="Password"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
             style={{
               width: "100%",
@@ -132,12 +146,7 @@ export default function Login() {
             Login
           </button>
 
-          <p
-            style={{
-              marginTop: "20px",
-              fontSize: "16px",
-            }}
-          >
+          <p style={{ marginTop: "20px", fontSize: "16px" }}>
             Don't have an account?{" "}
             <Link
               to="/register"

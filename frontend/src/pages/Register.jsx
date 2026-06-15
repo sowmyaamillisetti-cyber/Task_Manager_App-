@@ -57,9 +57,9 @@ export default function Register() {
         <div
           style={{
             background: "white",
-            width: "450px",
-            padding: "40px",
-            borderRadius: "20px",
+            width: "800px",
+            padding: "30px",
+            borderRadius: "30px",
             animation: "fadeIn 0.8s ease-in-out, glow 3s infinite",
             textAlign: "center",
           }}
